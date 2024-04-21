@@ -25,12 +25,17 @@ jobs:
         run: pyinstaller --onefile generate-sales-excel.py          
       - name: Move Executable
         run: move dist/generate-sales-excel.exe generate-sales-excel.exe
-      - name: Create a Release
-        uses: elgohr/Github-Release-Action@v5
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          title: New release
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          body_path: change.log
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
