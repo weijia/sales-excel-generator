@@ -16,7 +16,7 @@ jobs:
       - name: Get the version #https://github.community/t/how-to-get-just-the-tag-name/16241/10
         id: get_version
         shell: bash # https://github.community/t/how-to-get-just-the-tag-name/16241/14
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT          
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}          
       - name: Install Dependencies
         run: |
           python -m pip install pyinstaller
@@ -25,17 +25,12 @@ jobs:
         run: pyinstaller --onefile generate-sales-excel.py          
       - name: Move Executable
         run: move dist/generate-sales-excel.exe generate-sales-excel.exe
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create a Release
+        uses: elgohr/Github-Release-Action@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
-          body_path: change.log
+          title: New release
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
