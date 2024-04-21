@@ -35,7 +35,7 @@ jobs:
           release_name: Release ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
-          body_path: change.log
+          body: TODO New Release.
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
